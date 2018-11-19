@@ -12,22 +12,23 @@ import (
 const endPoint = "https://www.city.aizuwakamatsu.fukushima.jp/index_php/gomical/index_i.php?typ=p"
 
 func main() {
-	info := GetInfo("006500")
+	place, info := GetInfo("000800")
 
+	fmt.Printf("%s\n", place)
 	for k, v := range info {
 		fmt.Printf("%s -> %s\n", k, v)
 	}
 }
 
-func GetInfo(place string) map[string]string {
+func GetInfo(id string) (string, map[string]string) {
 	values := &url.Values{}
-	values.Add("m", place)
+	values.Add("m", id)
 	values.Add("d", "1")
 
 	req, err := http.NewRequest("POST", endPoint, strings.NewReader(values.Encode()))
 	if err != nil {
 		fmt.Printf("%v\n", err)
-		return nil
+		return "", nil
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
@@ -38,8 +39,10 @@ func GetInfo(place string) map[string]string {
 
 	if err != nil {
 		fmt.Printf("%v\n", err)
-		return nil
+		return "", nil
 	}
+
+	place := doc.Find("h2.title3").Last().Text()
 
 	list := doc.Find("h2.title3 + ul")
 
@@ -52,6 +55,6 @@ func GetInfo(place string) map[string]string {
 		result[date] = info
 	})
 
-	return result
+	return place, result
 
 }
