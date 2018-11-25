@@ -1,0 +1,26 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    ports:
+      - 3306:3306
+    container_name: db
+    env_file: .env
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql-data:/data/db
+  worker:
+    build: ./worker
+    links:
+      - db
+    container_name: worker
+    env_file: .env
+    command: sh /wait.sh
+        #  api:
+        #    build: ./api
+        #    ports:
+        #      - 5000:5000
+        #    container_name: api-server
+volumes:
+  mysql-data:
+    driver: local

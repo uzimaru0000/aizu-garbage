@@ -1,4 +1,0 @@
-package: github.com/uzimaru0000/garbage
-import:
-- package: github.com/PuerkitoBio/goquery
-  version: ~1.5.0
