@@ -24,3 +24,4 @@ Godeps/
 
 .vscode
 .env
+hyper-compose.yml
