@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/uzimaru0000/garbage/worker/config"
-	"github.com/uzimaru0000/garbage/worker/model"
+	"github.com/uzimaru0000/aizu-garbage/utils/config"
+	"github.com/uzimaru0000/aizu-garbage/utils/model"
 )
 
 func main() {

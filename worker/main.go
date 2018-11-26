@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	"github.com/uzimaru0000/garbage/worker/config"
-	"github.com/uzimaru0000/garbage/worker/controller"
-	"github.com/uzimaru0000/garbage/worker/model"
+	"github.com/uzimaru0000/aizu-garbage/utils/config"
+	"github.com/uzimaru0000/aizu-garbage/utils/model"
+	"github.com/uzimaru0000/aizu-garbage/worker/controller"
 )
 
 func main() {

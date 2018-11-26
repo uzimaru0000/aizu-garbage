@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/uzimaru0000/garbage/worker/model"
+	"github.com/uzimaru0000/aizu-garbage/utils/model"
 )
 
 const endPoint = "https://www.city.aizuwakamatsu.fukushima.jp/index_php/gomical/index_i.php?typ=p"

@@ -5,9 +5,9 @@ import (
 )
 
 type Place struct {
-	ID      int
-	PlaceID string
-	Name    string
+	ID      int    `json:"-"`
+	PlaceID string `json:"id"`
+	Name    string `json:"name"`
 }
 
 func (p *Place) Save(db *gorm.DB) {

@@ -3,7 +3,7 @@ package model
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/uzimaru0000/garbage/worker/config"
+	"github.com/uzimaru0000/aizu-garbage/utils/config"
 )
 
 var engine *gorm.DB

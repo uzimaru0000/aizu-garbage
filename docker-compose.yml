@@ -15,12 +15,14 @@ services:
       - db
     container_name: worker
     env_file: .env
-    command: sh /wait.sh
-        #  api:
-        #    build: ./api
-        #    ports:
-        #      - 5000:5000
-        #    container_name: api-server
+  api:
+    build: ./api
+    links:
+      - db
+    ports:
+      - 5000:5000
+    container_name: api-server
+    env_file: .env
 volumes:
   mysql-data:
     driver: local

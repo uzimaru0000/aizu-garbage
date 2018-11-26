@@ -10,9 +10,9 @@ import (
 )
 
 type Schedule struct {
-	ID         string
-	Place      *Place
-	Categories []*Category
+	ID         string `json:"-"`
+	*Place     `json:"place"`
+	Categories []*Category `json:"categories"`
 }
 
 func Parser(date string) time.Time {

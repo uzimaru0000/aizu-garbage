@@ -7,10 +7,10 @@ import (
 )
 
 type Category struct {
-	ID      uint32 `gorm:"primary_key"`
-	PlaceID string
-	Info    string
-	Date    time.Time
+	ID      uint32    `gorm:"primary_key" json:"-"`
+	PlaceID string    `json:"-"`
+	Info    string    `json:"info"`
+	Date    time.Time `json:"date"`
 }
 
 func (c *Category) Save(db *gorm.DB) {
