@@ -20,7 +20,7 @@ func main() {
 
 	getSchedules(db)
 
-	ticker := time.NewTicker(7 * 24 * time.Hour)
+	ticker := time.NewTicker(6 * 24 * time.Hour)
 	defer ticker.Stop()
 	for {
 		<-ticker.C
