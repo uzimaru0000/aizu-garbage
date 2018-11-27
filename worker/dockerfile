@@ -8,8 +8,6 @@ COPY . .
 RUN make
 
 FROM alpine
-RUN apk add --no-cache ca-certificates &&\
-    apk add --no-cache mysql-client
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/src/github.com/uzimaru0000/aizu-garbage/worker/worker /worker
-COPY wait.sh /wait.sh
-ENTRYPOINT [ "sh", "./wait.sh" ]
+ENTRYPOINT [ "./worker" ]

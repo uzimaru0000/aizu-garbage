@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/uzimaru0000/aizu-garbage/utils/config"
@@ -20,12 +19,6 @@ func main() {
 
 	getSchedules(db)
 
-	ticker := time.NewTicker(6 * 24 * time.Hour)
-	defer ticker.Stop()
-	for {
-		<-ticker.C
-		go getSchedules(db)
-	}
 }
 
 func getSchedules(db *gorm.DB) {

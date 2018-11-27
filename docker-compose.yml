@@ -10,13 +10,6 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql-data:/data/db
-  worker:
-    image: uzimaru0000/garbage-worker
-    links:
-      - db
-    container_name: worker
-    env_file:
-      - .env
   api:
     image: uzimaru0000/garbage-api
     links:
