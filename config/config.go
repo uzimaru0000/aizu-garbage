@@ -1,8 +1,6 @@
 package config
 
 import (
-	"os"
-
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -21,8 +19,7 @@ type MySQL struct {
 var config Config
 
 func Init(envPath string) {
-	mode := os.Getenv("MODE")
-	if mode == "DEV" {
+	if envPath != "" {
 		err := godotenv.Load(envPath)
 		if err != nil {
 			panic(err)

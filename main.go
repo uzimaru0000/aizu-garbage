@@ -1,22 +1,31 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 
-	"github.com/uzimaru0000/aizu-garbage/utils/config"
-	"github.com/uzimaru0000/aizu-garbage/utils/model"
+	"github.com/uzimaru0000/aizu-garbage/config"
+	"github.com/uzimaru0000/aizu-garbage/controller"
+	"github.com/uzimaru0000/aizu-garbage/model"
 )
 
 var conf *config.Config
 var db *gorm.DB
 
 func main() {
-	config.Init("../.env")
+	config.Init("")
 	conf = config.Get()
 	db = model.DBConnect(conf.MySQL.Host, conf.MySQL)
 
 	engine := gin.Default()
+
+	// 場所情報を保存
+	allPlace := controller.GetPlaceList()
+	for _, place := range allPlace {
+		place.Save(db)
+	}
 
 	v1 := engine.Group("/api/v1")
 	{
@@ -37,6 +46,18 @@ func GetGarbageByID(c *gin.Context) {
 
 	schedule := &model.Schedule{ID: placeID}
 	schedule.Get(db)
+
+	if len(schedule.Categories) == 0 {
+		place := &model.Place{PlaceID: placeID}
+		place.Get(db)
+		var err error
+		schedule, err = controller.GetInfo(place)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err})
+			return
+		}
+		schedule.Save(db)
+	}
 
 	c.JSON(200, schedule)
 }

@@ -1,23 +1,40 @@
 package controller
 
 import (
-	"fmt"
+	"crypto/tls"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
-	"sync"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/uzimaru0000/aizu-garbage/utils/model"
+	"github.com/uzimaru0000/aizu-garbage/model"
 )
 
 const endPoint = "https://www.city.aizuwakamatsu.fukushima.jp/index_php/gomical/index_i.php?typ=p"
 
 func GetPlaceList() []*model.Place {
 	places := []*model.Place{}
-	doc, err := goquery.NewDocument(endPoint)
 
+	req, err := createRequest("000000")
 	if err != nil {
+		log.Printf(err.Error())
+		return places
+	}
+
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf(err.Error())
+		return places
+	}
+
+	doc, err := goquery.NewDocumentFromResponse(resp)
+	if err != nil {
+		log.Printf(err.Error())
 		return places
 	}
 
@@ -33,64 +50,27 @@ func GetPlaceList() []*model.Place {
 	return places
 }
 
-func GetInfo(places []*model.Place) []*model.Schedule {
-	result := make(chan []*model.Schedule)
-	value := make(chan *model.Schedule)
-	finish := make(chan bool)
-
-	var wg sync.WaitGroup
-
-	go func() {
-		r := make([]*model.Schedule, 0)
-
-		for {
-			select {
-			case v := <-value:
-				if v != nil {
-					r = append(r, v)
-				}
-			case <-finish:
-				result <- r
-				return
-			}
-		}
-	}()
-
-	for _, p := range places {
-		wg.Add(1)
-		go func(place *model.Place) {
-			defer wg.Done()
-			scrapeInfo(value, place)
-		}(p)
-	}
-	wg.Wait()
-	finish <- true
-
-	r := <-result
-	return r
-}
-
-func scrapeInfo(ch chan *model.Schedule, place *model.Place) {
+func GetInfo(place *model.Place) (*model.Schedule, error) {
 	req, err := createRequest(place.PlaceID)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		ch <- nil
-		return
+		log.Printf(err.Error())
+		return nil, err
 	}
 
-	client := &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		ch <- nil
-		return
+		log.Printf(err.Error())
+		return nil, err
 	}
 
 	doc, err := goquery.NewDocumentFromResponse(resp)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		ch <- nil
-		return
+		log.Printf(err.Error())
+		return nil, err
 	}
 
 	schedule := &model.Schedule{ID: place.PlaceID, Place: place}
@@ -107,7 +87,7 @@ func scrapeInfo(ch chan *model.Schedule, place *model.Place) {
 		schedule.Categories = append(schedule.Categories, cate)
 	}
 
-	ch <- schedule
+	return schedule, nil
 }
 
 func createRequest(id string) (*http.Request, error) {
@@ -120,6 +100,7 @@ func createRequest(id string) (*http.Request, error) {
 		return nil, err
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.122 Safari/537.36 Vivaldi/2.3.1440.61")
 
 	return req, nil
 }
