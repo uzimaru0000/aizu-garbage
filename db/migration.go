@@ -7,6 +7,7 @@ import (
 	"github.com/uzimaru0000/aizu-garbage/model"
 )
 
+// これも個人的には関数で切っておきたい、これだけ独立したアプリケーションになっているけど実際はそうではないので
 func main() {
 	config.Init("")
 	config := config.Get()
