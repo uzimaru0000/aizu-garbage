@@ -23,5 +23,5 @@ Godeps/
 # End of https://www.gitignore.io/api/go
 
 .vscode
-.env
+.env*
 hyper-compose.yml

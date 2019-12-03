@@ -1,37 +1,23 @@
 package config
 
-import (
-	"github.com/joho/godotenv"
-	"github.com/kelseyhightower/envconfig"
-)
-
-type Config struct {
-	MySQL MySQL `envconfig:"MYSQL"`
-}
+import "fmt"
 
 type MySQL struct {
 	User     string
-	Password string
-	Name     string `envconfig:"DATABASE"`
-	Host     string
+	PassWord string
+	Address  string
+	Port     string
+	Socket   string
+	DataBase string
 }
 
-var config Config
-
-func Init(envPath string) {
-	if envPath != "" {
-		err := godotenv.Load(envPath)
-		if err != nil {
-			panic(err)
-		}
+func (c *MySQL) Source() string {
+	prot := "tcp"
+	url := fmt.Sprintf("%s:%s", c.Address, c.Port)
+	if c.Socket != "" {
+		prot = "unix"
+		url = c.Socket
 	}
 
-	err := envconfig.Process("", &config)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func Get() *Config {
-	return &config
+	return fmt.Sprintf("%s:%s@%s(%s)/%s?parseTime=true", c.User, c.PassWord, prot, url, c.DataBase)
 }

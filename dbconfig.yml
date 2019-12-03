@@ -1,0 +1,5 @@
+development:
+  dialect: mysql
+  datasource: dustman:pass@tcp(127.0.0.1:3306)/garbage?parseTime=true
+  dir: migrations
+  
